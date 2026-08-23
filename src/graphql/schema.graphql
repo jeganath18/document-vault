@@ -1,0 +1,70 @@
+scalar DateTime
+
+type Collection {
+  id: ID!
+  name: String!
+  slug: String!
+  createdAt: DateTime!
+  documents(
+    take: Int
+    cursor: ID
+  ): DocumentConnection!
+}
+
+type Document {
+  id: ID!
+  title: String!
+  content: String!
+  tags: [String!]!
+  collectionId: ID!
+  isArchived: Boolean!
+  createdAt: DateTime!
+}
+
+type DocumentConnection {
+  nodes: [Document!]!
+  nextCursor: ID
+}
+
+type Query {
+  collections: [Collection!]!
+  collection(id: ID!): Collection
+  documents(
+    collectionId: ID
+    search: String
+    isArchived: Boolean
+    take: Int
+    cursor: ID
+  ): DocumentConnection!
+}
+
+type Mutation {
+  createCollection(
+    name: String!
+    slug: String!
+  ): Collection!
+
+  createDocument(
+    title: String!
+    content: String!
+    tags: [String!]
+    collectionId: ID!
+  ): Document!
+
+  updateDocument(
+    id: ID!
+    title: String
+    content: String
+    tags: [String!]
+    isArchived: Boolean
+  ): Document!
+
+  deleteDocument(
+    id: ID!
+  ): Boolean!
+
+  moveDocument(
+    id: ID!
+    collectionId: ID!
+  ): Document!
+}
