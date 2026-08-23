@@ -9,9 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/document_vault
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,9 +32,13 @@ jobs:
           done
 
       - name: Generate Prisma Client
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/document_vault
         run: bun run gendb
 
-      - name: Apply migrations
+      - name: Apply Prisma migrations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/document_vault
         run: bunx prisma migrate deploy
 
       - name: Lint
@@ -47,4 +48,6 @@ jobs:
         run: bun run typecheck
 
       - name: Tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/document_vault
         run: bun test
