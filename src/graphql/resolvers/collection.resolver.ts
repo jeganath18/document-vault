@@ -1,5 +1,9 @@
 import { GraphQLError } from "graphql";
 import type { GraphQLContext } from "../context";
+import {
+  paginateDocuments,
+  type DocumentPaginationArgs,
+} from "../utils/document-pagination";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -90,25 +94,30 @@ export const collectionResolvers = {
     },
   },
 
-  Collection: {
-    documents: async (
-      parent: { id: string },
-      _args: unknown,
-      context: GraphQLContext,
-    ) => {
-      const documents = await context.prisma.document.findMany({
-        where: {
-          collectionId: parent.id,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-
-      return {
-        nodes: documents,
-        nextCursor: null,
-      };
-    },
+Collection: {
+  documents: async (
+    parent: { id: string },
+    args: DocumentPaginationArgs,
+    context: GraphQLContext,
+  ) => {
+    return paginateDocuments(
+      context,
+      {
+        collectionId: parent.id,
+      },
+      {
+        ...(args.take !== undefined
+          ? {
+              take: args.take,
+            }
+          : {}),
+        ...(args.cursor !== undefined
+          ? {
+              cursor: args.cursor,
+            }
+          : {}),
+      },
+    );
+  },
   },
 };
