@@ -21,13 +21,32 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Configure database environment
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/document_vault" >> "$GITHUB_ENV"
+
       - name: Start PostgreSQL
         run: docker compose up -d
+
+      - name: Wait for PostgreSQL
+        run: |
+          until docker compose exec -T postgres pg_isready -U postgres -d document_vault; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
+      - name: Verify database environment
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DATABASE_URL is missing"
+            exit 1
+          fi
+          echo "DATABASE_URL is configured"
 
       - name: Generate Prisma Client
         run: bun run gendb
 
-      - name: Apply migrations
+      - name: Apply Prisma migrations
         run: bunx prisma migrate deploy
 
       - name: Lint
