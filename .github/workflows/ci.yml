@@ -9,6 +9,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/document_vault
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,6 +26,13 @@ jobs:
 
       - name: Start PostgreSQL
         run: docker compose up -d
+
+      - name: Wait for PostgreSQL
+        run: |
+          until docker compose exec -T postgres pg_isready -U postgres -d document_vault; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
 
       - name: Generate Prisma Client
         run: bun run gendb
