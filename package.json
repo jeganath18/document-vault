@@ -4,9 +4,11 @@
   "type": "module",
   "private": true,
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bun": "latest",
     "@types/node": "^26.2.0",
     "@types/pg": "^8.23.1",
+    "eslint": "^10.9.0",
     "prisma": "^7.9.1"
   },
   "peerDependencies": {
@@ -28,6 +30,8 @@
     "migrate": "prisma migrate dev",
     "studio": "prisma studio",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "sanity": "bun run lint && bun run typecheck && bun run test"
   }
 }
