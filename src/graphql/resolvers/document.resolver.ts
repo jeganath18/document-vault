@@ -6,8 +6,8 @@ interface DocumentsArgs {
     collectionId?: string | null;
     search?: string | null;
     isArchived?: boolean | null;
-    take?: undefined;
-    cursor?: undefined;
+    take?: number | null;
+    cursor?: string | null;
 }
 
 interface CreateDocumentArgs {
