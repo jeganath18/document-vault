@@ -735,3 +735,9 @@ The goal is to provide a clean, tested, maintainable implementation of the reque
 Jeganath B
 
 *Document Vault — GraphQL API*
+
+## Submission
+
+This repository contains the completed Document Vault GraphQL API take-home assignment.
+
+The implementation was developed incrementally with focused commits covering the database schema, GraphQL operations, pagination, tests, documentation, Docker support, and CI.
